@@ -2,20 +2,20 @@ const { TicketService } = require("../src/pairtest/TicketService");
 
 beforeEach(() => {
   const ticketPurchaseDetails = {
-    accountId: 0,
+    accountId: 1,
     tickets: { INFANT: 0, CHILD: 0, ADULT: 0 },
   };
   const ticketPurchaseRequest = new TicketService(ticketPurchaseDetails);
 });
 afterEach(() => {
   const ticketPurchaseDetails = {
-    accountId: 0,
+    accountId: 1,
     tickets: { INFANT: 0, CHILD: 0, ADULT: 0 },
   };
   const ticketPurchaseRequest = new TicketService(ticketPurchaseDetails);
 });
 
-describe("ticketPurchaseDetails (Argument checks)", () => {
+describe.only("ticketPurchaseDetails (Argument checks)", () => {
   test("should return an error with total tickets > 20", () => {
     const ticketPurchaseDetails = {
       accountId: 1,
@@ -52,9 +52,33 @@ describe("ticketPurchaseDetails (Argument checks)", () => {
 
     expect(actual).toEqual("Error: Infants must not exceed number of ADULTs");
   });
+  test("should return an error when accountID is 0", () => {
+    const ticketPurchaseDetails = {
+      accountId: 0,
+      tickets: { INFANT: 0, CHILD: 0, ADULT: 4 },
+    };
+
+    const ticketPurchaseRequest = new TicketService(ticketPurchaseDetails);
+
+    const actual = ticketPurchaseRequest._calculateTotalTicketAmount();
+
+    expect(actual).toEqual("Error: Invalid AccountID");
+  });
+  test("should return an error when accountID is not an integer", () => {
+    const ticketPurchaseDetails = {
+      accountId: 1.1,
+      tickets: { INFANT: 0, CHILD: 0, ADULT: 4 },
+    };
+
+    const ticketPurchaseRequest = new TicketService(ticketPurchaseDetails);
+
+    const actual = ticketPurchaseRequest._calculateTotalTicketAmount();
+
+    expect(actual).toEqual("Error: Invalid AccountID");
+  });
 });
 
-describe.only("calculateTotalticketAmount", () => {
+describe("calculateTotalticketAmount", () => {
   test("should return a number", () => {
     const ticketPurchaseDetails = {
       accountId: 1,

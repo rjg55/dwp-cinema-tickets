@@ -25,6 +25,14 @@ class TicketService {
     let invalidPurchase = false;
     let errorMessage = "";
 
+    if (this.accountId === 0 || !Number.isInteger(this.accountId)) {
+      const instanceOfInvalidPurchase = new InvalidPurchaseException(
+        Error("Invalid AccountID")
+      );
+
+      return instanceOfInvalidPurchase.invalidPurchase();
+    }
+
     if (this.infantTickets + this.childTickets + this.adultTickets > 20) {
       invalidPurchase = true;
       errorMessage = "Max number of tickets is 20";
@@ -32,11 +40,11 @@ class TicketService {
 
     if (this.adultTickets === 0) {
       invalidPurchase = true;
-      errorMessage = "1 or more adult ticket must be bought";
+      errorMessage = "1 or more ADULT ticket must be bought";
     }
 
     if (this.infantTickets > this.adultTickets) {
-      errorMessage = "Infants must not exceed number of adults";
+      errorMessage = "Infants must not exceed number of ADULTs";
       invalidPurchase = true;
     }
 

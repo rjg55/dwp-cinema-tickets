@@ -1,14 +1,24 @@
-const TicketTypeRequest = require("./lib/TicketTypeRequest.js");
+const { TicketTypeRequest } = require("./lib/TicketTypeRequest.js");
 const {
   InvalidPurchaseException,
 } = require("./lib/InvalidPurchaseException.js");
 
 class TicketService {
   constructor(ticketsRequest) {
+    for (const ticketType in ticketsRequest.tickets) {
+      const ticketTypeCheck = new TicketTypeRequest(
+        ticketType,
+        ticketsRequest.tickets[ticketType]
+      );
+
+      ticketTypeCheck.getNoOfTickets();
+      ticketTypeCheck.getTicketType();
+    }
+
     this.accountId = ticketsRequest.accountId;
-    this.infantTickets = ticketsRequest.tickets.infant;
-    this.childTickets = ticketsRequest.tickets.child;
-    this.adultTickets = ticketsRequest.tickets.adult;
+    this.infantTickets = ticketsRequest.tickets.INFANT;
+    this.childTickets = ticketsRequest.tickets.CHILD;
+    this.adultTickets = ticketsRequest.tickets.ADULT;
   }
 
   _calculateTotalTicketAmount() {
@@ -25,6 +35,16 @@ class TicketService {
       errorMessage = "1 or more adult ticket must be bought";
     }
 
+    if (this.infantTickets > this.adultTickets) {
+      errorMessage = "Infants must not exceed number of adults";
+      invalidPurchase = true;
+    }
+
+    let totalChildAmount = this.childTickets * 10;
+    let totalAdultAmount = this.adultTickets * 20;
+
+    let totalTicketAmount = totalChildAmount + totalAdultAmount;
+
     if (invalidPurchase) {
       const instanceOfInvalidPurchase = new InvalidPurchaseException(
         Error(errorMessage)
@@ -32,6 +52,8 @@ class TicketService {
 
       return instanceOfInvalidPurchase.invalidPurchase();
     }
+
+    return totalTicketAmount;
   }
 
   /**

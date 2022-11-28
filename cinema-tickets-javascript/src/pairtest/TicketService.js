@@ -19,6 +19,8 @@ class TicketService {
     this.infantTickets = ticketsRequest.tickets.INFANT;
     this.childTickets = ticketsRequest.tickets.CHILD;
     this.adultTickets = ticketsRequest.tickets.ADULT;
+    this.totalTicketAmount = 0;
+    this.totalSeats = 0;
   }
 
   _calculateTotalTicketAmount() {
@@ -51,7 +53,7 @@ class TicketService {
     let totalChildAmount = this.childTickets * 10;
     let totalAdultAmount = this.adultTickets * 20;
 
-    let totalTicketAmount = totalChildAmount + totalAdultAmount;
+    this.totalTicketAmount = totalChildAmount + totalAdultAmount;
 
     if (invalidPurchase) {
       const instanceOfInvalidPurchase = new InvalidPurchaseException(
@@ -61,14 +63,20 @@ class TicketService {
       return instanceOfInvalidPurchase.invalidPurchase();
     }
 
-    return totalTicketAmount;
+    return this.totalTicketAmount;
+  }
+
+  _calculateNoOfSeats() {
+    this.totalSeats = this.adultTickets + this.childTickets;
+
+    return this.totalSeats;
   }
 
   /**
    * Should only have private methods other than the one below.
    */
 
-  purchaseTickets(accountId, ...ticketTypeRequests) {
+  purchaseTickets() {
     // throws InvalidPurchaseException
   }
 }

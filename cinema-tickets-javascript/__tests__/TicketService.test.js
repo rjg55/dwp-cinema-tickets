@@ -15,7 +15,7 @@ afterEach(() => {
   const ticketPurchaseRequest = new TicketService(ticketPurchaseDetails);
 });
 
-describe.only("ticketPurchaseDetails (Argument checks)", () => {
+describe("ticketPurchaseDetails (Argument checks)", () => {
   test("should return an error with total tickets > 20", () => {
     const ticketPurchaseDetails = {
       accountId: 1,
@@ -102,5 +102,32 @@ describe("calculateTotalticketAmount", () => {
     const actual = ticketPurchaseRequest._calculateTotalTicketAmount();
 
     expect(actual).toEqual(110);
+  });
+});
+
+describe("calculateNoOfSeats", () => {
+  test("should return a number", () => {
+    const ticketPurchaseDetails = {
+      accountId: 1,
+      tickets: { INFANT: 5, CHILD: 1, ADULT: 5 },
+    };
+
+    const ticketPurchaseRequest = new TicketService(ticketPurchaseDetails);
+
+    const actual = ticketPurchaseRequest._calculateNoOfSeats();
+
+    expect(typeof actual).toEqual("number");
+  });
+  test("should return 5 for 1 infant, 1 child and 4 adults", () => {
+    const ticketPurchaseDetails = {
+      accountId: 1,
+      tickets: { INFANT: 1, CHILD: 1, ADULT: 4 },
+    };
+
+    const ticketPurchaseRequest = new TicketService(ticketPurchaseDetails);
+
+    const actual = ticketPurchaseRequest._calculateNoOfSeats();
+
+    expect(actual).toEqual(5);
   });
 });

@@ -12,19 +12,22 @@ class TicketService {
   }
 
   _calculateTotalTicketAmount() {
-    () => {
-      throw new Error("error");
-    };
-
     let invalidPurchase = false;
+    let errorMessage = "";
 
     if (this.infantTickets + this.childTickets + this.adultTickets > 20) {
       invalidPurchase = true;
+      errorMessage = "Max number of tickets is 20";
+    }
+
+    if (this.adultTickets === 0) {
+      invalidPurchase = true;
+      errorMessage = "1 or more adult ticket must be bought";
     }
 
     if (invalidPurchase) {
       const instanceOfInvalidPurchase = new InvalidPurchaseException(
-        Error("Max number of tickets is 20")
+        Error(errorMessage)
       );
 
       return instanceOfInvalidPurchase.invalidPurchase();

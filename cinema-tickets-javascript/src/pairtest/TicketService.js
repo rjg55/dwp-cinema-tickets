@@ -2,6 +2,12 @@ const { TicketTypeRequest } = require("./lib/TicketTypeRequest.js");
 const {
   InvalidPurchaseException,
 } = require("./lib/InvalidPurchaseException.js");
+const {
+  TicketPaymentService,
+} = require("../thirdparty/paymentgateway/TicketPaymentService.js");
+const {
+  SeatReservationService,
+} = require("../thirdparty/seatbooking/SeatReservationService.js");
 
 class TicketService {
   constructor(ticketsRequest) {
@@ -77,7 +83,20 @@ class TicketService {
    */
 
   purchaseTickets() {
-    // throws InvalidPurchaseException
+    const paymentInstance = new TicketPaymentService();
+    const reservationInstance = new SeatReservationService();
+    const paymentRequest = paymentInstance.makePayment(
+      this.accountId,
+      this.totalTicketAmount
+    );
+    const reservationRequest = reservationInstance.reserveSeat(
+      this.accountId,
+      this.totalSeats
+    );
+
+    if (paymentRequest === undefined && reservationRequest === undefined) {
+      return "Payment successful";
+    }
   }
 }
 

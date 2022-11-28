@@ -1,4 +1,7 @@
 const { TicketService } = require("../src/pairtest/TicketService");
+const {
+  TicketPaymentService,
+} = require("../src/thirdparty/paymentgateway/TicketPaymentService");
 
 beforeEach(() => {
   const ticketPurchaseDetails = {
@@ -129,5 +132,36 @@ describe("calculateNoOfSeats", () => {
     const actual = ticketPurchaseRequest._calculateNoOfSeats();
 
     expect(actual).toEqual(5);
+  });
+});
+
+describe("purchaseTickets", () => {
+  test("paymentRequest", () => {
+    const ticketPurchaseDetails = {
+      accountId: 1,
+      tickets: { INFANT: 5, CHILD: 1, ADULT: 5 },
+    };
+
+    const ticketRequest = new TicketService(ticketPurchaseDetails);
+
+    const totalAmount = ticketRequest._calculateTotalTicketAmount();
+
+    const purchaseRequest = ticketRequest.purchaseTickets();
+
+    expect(purchaseRequest).toEqual("Payment successful");
+  });
+  test("seatRequest", () => {
+    const ticketPurchaseDetails = {
+      accountId: 1,
+      tickets: { INFANT: 5, CHILD: 1, ADULT: 5 },
+    };
+
+    const ticketRequest = new TicketService(ticketPurchaseDetails);
+
+    const totalSeats = ticketRequest._calculateNoOfSeats();
+
+    const purchaseRequest = ticketRequest.purchaseTickets();
+
+    expect(purchaseRequest).toEqual("Payment successful");
   });
 });

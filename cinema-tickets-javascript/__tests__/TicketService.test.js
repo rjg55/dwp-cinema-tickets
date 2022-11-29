@@ -1,7 +1,4 @@
 const { TicketService } = require("../src/pairtest/TicketService");
-const {
-  TicketPaymentService,
-} = require("../src/thirdparty/paymentgateway/TicketPaymentService");
 
 beforeEach(() => {
   const ticketPurchaseDetails = {
@@ -144,8 +141,6 @@ describe("purchaseTickets", () => {
 
     const ticketRequest = new TicketService(ticketPurchaseDetails);
 
-    const totalAmount = ticketRequest._calculateTotalTicketAmount();
-
     const purchaseRequest = ticketRequest.purchaseTickets();
 
     expect(purchaseRequest).toEqual("Payment successful");
@@ -157,8 +152,6 @@ describe("purchaseTickets", () => {
     };
 
     const ticketRequest = new TicketService(ticketPurchaseDetails);
-
-    const totalSeats = ticketRequest._calculateNoOfSeats();
 
     const purchaseRequest = ticketRequest.purchaseTickets();
 
